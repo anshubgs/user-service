@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.15.xsd">
+
+    <changeSet id="005-create-cached-device" author="anshu">
+
+        <!-- ========================= -->
+        <!-- Create cached_device Table -->
+        <!-- ========================= -->
+
+        <createTable tableName="cached_device" schemaName="users">
+
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_cached_device"
+                             nullable="false"/>
+            </column>
+
+            <column name="uuid" type="UUID">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="uk_cached_device_uuid"/>
+            </column>
+
+            <column name="house_uuid" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="secret" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="VARCHAR(100)"/>
+
+            <column name="device_type" type="VARCHAR(50)"/>
+
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_seen" type="TIMESTAMP"/>
+
+            <column name="created_at"
+                    type="TIMESTAMP"
+                    defaultValueComputed="CURRENT_TIMESTAMP"/>
+
+            <column name="updated_at"
+                    type="TIMESTAMP"
+                    defaultValueComputed="CURRENT_TIMESTAMP"/>
+
+        </createTable>
+
+        <!-- ========================= -->
+        <!-- Indexes -->
+        <!-- ========================= -->
+
+        <createIndex indexName="idx_device_house"
+                     tableName="cached_device"
+                     schemaName="users">
+            <column name="house_uuid"/>
+        </createIndex>
+
+        <createIndex indexName="idx_device_status"
+                     tableName="cached_device"
+                     schemaName="users">
+            <column name="status"/>
+        </createIndex>
+
+        <createIndex indexName="idx_device_type"
+                     tableName="cached_device"
+                     schemaName="users">
+            <column name="device_type"/>
+        </createIndex>
+
+        <!-- ========================= -->
+        <!-- Check Constraint (Stable SQL Way) -->
+        <!-- ========================= -->
+
+        <sql>
+            ALTER TABLE users.cached_device
+            ADD CONSTRAINT chk_cached_device_status
+            CHECK (status IN ('INACTIVE','ACTIVE','OFFLINE'));
+        </sql>
+
+        <!-- ========================= -->
+        <!-- Foreign Key (Recommended) -->
+        <!-- ========================= -->
+
+        <addForeignKeyConstraint
+                baseTableSchemaName="users"
+                baseTableName="cached_device"
+                baseColumnNames="house_uuid"
+                referencedTableSchemaName="users"
+                referencedTableName="house"
+                referencedColumnNames="uuid"
+                constraintName="fk_cached_device_house"/>
+
+    </changeSet>
+
+</databaseChangeLog>

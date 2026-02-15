@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <include file="db/changelog/v0-user-create-user-schema.xml"/>
+    <include file="db/changelog/v1-user-create-user-table.xml"/>
+    <include file="db/changelog/v2-user-create-house-table.xml"/>
+    <include file="db/changelog/v3-user-create-refresh-token-table.xml"/>
+   <include file="db/changelog/v4-user-create-cached-device.xml"/>
+  
+     
+
+
+</databaseChangeLog>
