@@ -5,6 +5,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.anshu.userservice.user.dto.AuthResponse;
+import com.anshu.userservice.user.dto.CreateMemberRequest;
+import com.anshu.userservice.user.dto.CreateMemberResponse;
 import com.anshu.userservice.user.dto.LoginRequest;
 import com.anshu.userservice.user.dto.RegisterRequest;
 import com.anshu.userservice.user.dto.UpdateProfileRequest;
@@ -25,5 +27,7 @@ public interface UserService {
 	void updateProfile(UUID userUuid, UpdateProfileRequest request);
 
 	void changePassword(UUID userUuid, String oldPassword, String newPassword);
+
+	CreateMemberResponse createMember(@Valid CreateMemberRequest request, UUID adminUuid);
 
 }
