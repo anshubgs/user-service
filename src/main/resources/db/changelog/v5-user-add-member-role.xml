@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.15.xsd">
+
+    <changeSet id="003-add-member-role" author="anshu">
+
+        <!-- Drop old role constraint -->
+        <sql>
+            ALTER TABLE users.user_account
+            DROP CONSTRAINT chk_user_role;
+        </sql>
+
+        <!-- Add updated role constraint -->
+        <sql>
+            ALTER TABLE users.user_account
+            ADD CONSTRAINT chk_user_role
+            CHECK (role IN ('ADMIN','USER','MEMBER'));
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

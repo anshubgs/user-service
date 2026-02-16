@@ -2,9 +2,11 @@ package com.anshu.userservice.user.controller;
 
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,11 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.anshu.userservice.common.response.ApiResponse;
 import com.anshu.userservice.user.dto.ChangePasswordRequest;
+import com.anshu.userservice.user.dto.CreateMemberRequest;
+import com.anshu.userservice.user.dto.CreateMemberResponse;
 import com.anshu.userservice.user.dto.UpdateProfileRequest;
 import com.anshu.userservice.user.dto.UserResponse;
 import com.anshu.userservice.user.model.UserAccount;
 import com.anshu.userservice.user.service.UserService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -56,6 +61,17 @@ public class UserController {
 	 private UUID getUserUuid(Authentication authentication) {
 		    return UUID.fromString(authentication.getName());
 		}
+	 
+	 @PostMapping("/members")
+	 public ResponseEntity<ApiResponse<CreateMemberResponse>> addMember(@Valid @RequestBody CreateMemberRequest request,
+			 Authentication authentication){
+		 
+		 UUID adminUuid = UUID.fromString(authentication.getName());
+		 
+		 CreateMemberResponse response = userService.createMember(request,adminUuid);
+		 return ResponseEntity.status(HttpStatus.CREATED) .body(new ApiResponse<>(true, "Member created successfully", response));
+		 
+	 }
 
 
 }

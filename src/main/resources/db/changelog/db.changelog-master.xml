@@ -11,6 +11,7 @@
     <include file="db/changelog/v2-user-create-house-table.xml"/>
     <include file="db/changelog/v3-user-create-refresh-token-table.xml"/>
    <include file="db/changelog/v4-user-create-cached-device.xml"/>
+   <include file="db/changelog/v5-user-add-member-role.xml"/>
   
      
 
