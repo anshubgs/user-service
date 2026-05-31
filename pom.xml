@@ -6,10 +6,11 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Spring Boot Parent -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.10</version>
+        <version>3.2.5</version>
         <relativePath/>
     </parent>
 
@@ -23,11 +24,25 @@
         <jjwt.version>0.11.5</jjwt.version>
         <springdoc.version>2.5.0</springdoc.version>
         <spring-cloud-gcp.version>5.1.0</spring-cloud-gcp.version>
+
+        <!-- IMPORTANT -->
+        <spring-cloud.version>2023.0.1</spring-cloud.version>
     </properties>
 
-    <!-- 🔥 IMPORTANT: GCP BOM -->
+    <!-- Dependency Management -->
     <dependencyManagement>
         <dependencies>
+
+            <!-- Spring Cloud BOM -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- GCP BOM -->
             <dependency>
                 <groupId>com.google.cloud</groupId>
                 <artifactId>spring-cloud-gcp-dependencies</artifactId>
@@ -35,39 +50,36 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
 
-        <!-- Web -->
+        <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- Security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- JPA -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- Validation -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- Liquibase -->
         <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <!-- PostgreSQL -->
@@ -75,6 +87,12 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- Liquibase -->
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
         </dependency>
 
         <!-- JWT -->
@@ -103,23 +121,28 @@
             <version>${springdoc.version}</version>
         </dependency>
 
-        <!-- Actuator -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
         <!-- Redis -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
-        <!-- ✅ GCP Pub/Sub (NO VERSION HERE) -->
+        <!-- GCP Pub/Sub -->
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-starter-pubsub</artifactId>
         </dependency>
+
+        <!-- Spring Integration -->
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-core</artifactId>
+        </dependency>
+
+     <dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-core</artifactId>
+</dependency>
 
         <!-- MapStruct -->
         <dependency>
@@ -140,6 +163,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- Eureka Client -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
         <!-- Testing -->
