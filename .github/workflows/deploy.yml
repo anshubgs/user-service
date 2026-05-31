@@ -1,0 +1,33 @@
+name: Deploy User Service
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to GCP VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            cd ~/esp32-platform/user-service
+            git pull origin main
+            docker build -t user-service .
+            docker rm -f user-service || true
+            docker run -d \
+              --name user-service \
+              --env-file ~/esp32-platform/user-service/.env \
+              --network esp32-network \
+              -p 8082:8082 \
+              -v ~/esp32-platform/credentials:/app/credentials \
+              user-service
