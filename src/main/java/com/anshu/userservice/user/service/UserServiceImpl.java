@@ -18,6 +18,7 @@ import com.anshu.userservice.user.dto.LoginRequest;
 import com.anshu.userservice.user.dto.RegisterRequest;
 import com.anshu.userservice.user.dto.UpdateProfileRequest;
 import com.anshu.userservice.user.dto.UserResponse;
+import com.anshu.userservice.user.model.RefreshTokenEntity;
 import com.anshu.userservice.user.model.UserAccount;
 import com.anshu.userservice.user.model.UserRole;
 import com.anshu.userservice.user.model.UserStatus;
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final UserEventPublisher userEventPublisher;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     public void register(@Valid RegisterRequest request) {
@@ -85,15 +87,29 @@ public class UserServiceImpl implements UserService {
 
         boolean requiresHouseSetup = (user.getHouseUuid() == null);
 
-        String token = jwtService.generateToken(
+//        String token = jwtService.generateToken(
+//                user.getUuid(),
+//                user.getHouseUuid(),
+//                user.getRole()
+//        );
+        String accessToken = jwtService.generateToken(
                 user.getUuid(),
-                user.getHouseUuid()
-        );
+                user.getHouseUuid(),
+                user.getRole());
+
+        RefreshTokenEntity refreshToken =
+                refreshTokenService.createRefreshToken(user);
 
         return AuthResponse.builder()
-                .accessToken(token)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getToken())
                 .requiresHouseSetup(requiresHouseSetup)
                 .build();
+
+//        return AuthResponse.builder()
+//                .accessToken(token)
+//                .requiresHouseSetup(requiresHouseSetup)
+//                .build();
     }
 
     @Override

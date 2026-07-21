@@ -1,6 +1,5 @@
 package com.anshu.userservice.listner;
 
-
 import com.anshu.userservice.devicecache.model.CachedDevice;
 import com.anshu.userservice.devicecache.model.DeviceStatus;
 import com.anshu.userservice.devicecache.repository.CachedDeviceRepository;
@@ -21,43 +20,79 @@ public class DeviceRegisteredEventListener {
     private final ObjectMapper objectMapper;
     private final CachedDeviceRepository cachedDeviceRepository;
 
-    // Ye method ab simple call karne ke liye
     public void handleDeviceRegisteredEvent(String payload) {
         try {
-            log.info("📥 Received DeviceRegisteredEvent | payload={}", payload);
 
-            // Parse JSON to POJO
-            DeviceRegisteredEvent event = objectMapper.readValue(payload, DeviceRegisteredEvent.class);
+            log.info("======================================================");
+            log.info("📥 Incoming Payload : {}", payload);
+            log.info("======================================================");
 
-            // DB insert / update
-            Optional<CachedDevice> optionalDevice = cachedDeviceRepository.findByUuid(event.deviceUuid());
+            // JSON -> POJO
+            DeviceRegisteredEvent event =
+                    objectMapper.readValue(payload, DeviceRegisteredEvent.class);
+
+            log.info("========== DESERIALIZED EVENT ==========");
+            log.info("deviceUuid   : {}", event.deviceUuid());
+            log.info("deviceName   : {}", event.deviceName());
+            log.info("deviceType   : {}", event.deviceType());
+            log.info("deviceSecret : {}", event.deviceSecret());
+            log.info("status       : {}", event.status());
+            log.info("registeredAt : {}", event.registeredAt());
+            log.info("houseUuid    : {}", event.houseUuid());
+            log.info("userUuid     : {}", event.userUuid());
+            log.info("========================================");
+
+            Optional<CachedDevice> optionalDevice =
+                    cachedDeviceRepository.findByUuid(event.deviceUuid());
+
             CachedDevice dbDevice;
 
             if (optionalDevice.isPresent()) {
+
                 dbDevice = optionalDevice.get();
-                log.info("⚠ Device already exists, updating fields | uuid={}", event.deviceUuid());
+
+                log.info("⚠ Existing Device Found");
+                log.info("DB houseUuid BEFORE update = {}", dbDevice.getHouseUuid());
+
             } else {
+
                 dbDevice = CachedDevice.builder()
                         .uuid(event.deviceUuid())
                         .createdAt(LocalDateTime.now())
                         .build();
-                log.info("✅ New device, creating | uuid={}", event.deviceUuid());
+
+                log.info("✅ Creating New Device");
             }
 
-            // Update fields
             dbDevice.setName(event.deviceName());
             dbDevice.setDeviceType(event.deviceType());
             dbDevice.setSecret(event.deviceSecret());
-            dbDevice.setStatus(DeviceStatus.valueOf(event.status())); // convert String → Enum
-            dbDevice.setHouseUuid(event.houseId());
+            dbDevice.setStatus(DeviceStatus.valueOf(event.status()));
+            dbDevice.setHouseUuid(event.houseUuid());
             dbDevice.setUpdatedAt(LocalDateTime.now());
 
-            cachedDeviceRepository.save(dbDevice);
+            log.info("========== ENTITY BEFORE SAVE ==========");
+            log.info("uuid         : {}", dbDevice.getUuid());
+            log.info("houseUuid    : {}", dbDevice.getHouseUuid());
+            log.info("name         : {}", dbDevice.getName());
+            log.info("deviceType   : {}", dbDevice.getDeviceType());
+            log.info("secret       : {}", dbDevice.getSecret());
+            log.info("status       : {}", dbDevice.getStatus());
+            log.info("createdAt    : {}", dbDevice.getCreatedAt());
+            log.info("updatedAt    : {}", dbDevice.getUpdatedAt());
+            log.info("========================================");
 
-            log.info("🗄 Device saved/updated in DB | uuid={}", event.deviceUuid());
+            CachedDevice saved = cachedDeviceRepository.save(dbDevice);
+
+            log.info("========== SAVED SUCCESSFULLY ==========");
+            log.info("DB ID        : {}", saved.getId());
+            log.info("UUID         : {}", saved.getUuid());
+            log.info("House UUID   : {}", saved.getHouseUuid());
+            log.info("========================================");
 
         } catch (Exception e) {
             log.error("❌ Error processing DeviceRegisteredEvent", e);
+            throw new RuntimeException(e);
         }
     }
 }

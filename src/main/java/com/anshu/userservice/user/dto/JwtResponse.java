@@ -3,12 +3,10 @@ package com.anshu.userservice.user.dto;
 import lombok.Builder;
 
 @Builder
-public record AuthResponse(
+public record JwtResponse(
 
         String accessToken,
 
-        String refreshToken,
-
-        boolean requiresHouseSetup
+        String refreshToken
 
 ) {}

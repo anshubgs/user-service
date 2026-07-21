@@ -12,6 +12,7 @@ public record DeviceRegisteredEvent( UUID deviceUuid,
  String deviceSecret,
  String status,
  Instant registeredAt,
- UUID houseId) {
+ UUID houseUuid,
+ UUID userUuid) {
 
 }
